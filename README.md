@@ -11,7 +11,7 @@ For example, a file SomeFile.c should have a test file named TestSomeFile.c
 
 ### Test Runner Files
 Test runner files should be named the same as the test file whos tests are being
-ran however postpended with '_Runner'
+ran however postpended with 'Runner'
 
 For example, a test file TestSomeFile.c should have a test runner file named 
-TestSomeFile_Runner.c
+TestSomeFileRunner.c
