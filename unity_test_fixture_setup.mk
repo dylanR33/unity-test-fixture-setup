@@ -17,8 +17,8 @@ endif
 .PHONY: test
 
 # Paths that should be defined
-# PATHS : source file folder
-# PATHT : test source file folder
+# MODULE_DIR : folder containing CUT
+# TEST_DIR : test source file folder.
 # BUILD_DIR : top level build directory
 
 THIS_MAKEFILE_DIR = $(dir $(abspath $(lastword $(MAKEFILE_LIST))))
@@ -28,6 +28,8 @@ PATHUFIX = $(THIS_MAKEFILE_DIR)Unity/extras/fixture/src
 
 PATHTRUN = $(PATHT)/test_runners
 
+PATHS = $(MODULE_DIR)
+PATHT = $(TEST_DIR)
 PATHB = $(BUILD_DIR)/unity_build
 PATHD = $(PATHB)/depends
 PATHO = $(PATHB)/objs
