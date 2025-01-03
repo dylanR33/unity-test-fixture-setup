@@ -16,15 +16,20 @@ endif
 .PHONY: clean
 .PHONY: test
 
+# Paths that should be defined
+# PATHS
+# PATHT
+# PATHB
+
 PATHU = Unity/src/
 PATHUFIX = Unity/extras/fixture/src/
-PATHS = src/
-PATHT = test/
-PATHTRUN = test/test_runners/
-PATHB = build/
-PATHD = build/depends/
-PATHO = build/objs/
-PATHR = build/results/
+#PATHS = src/
+#PATHT = test/
+PATHTRUN = $(PATHT)test_runners/
+#PATHB = build/
+PATHD = $(PATHB)depends/
+PATHO = $(PATHB)objs/
+PATHR = $(PATHB)results/
 
 BUILD_PATHS = $(PATHB) $(PATHD) $(PATHO) $(PATHR)
 
