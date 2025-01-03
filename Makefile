@@ -21,8 +21,10 @@ endif
 # PATHT
 # PATHB
 
-PATHU = Unity/src/
-PATHUFIX = Unity/extras/fixture/src/
+MY_MAKEFILE_DIR = $(dir $(abspath $(lastword $(MAKEFILE_LIST))))
+
+PATHU = $(MY_MAKEFILE_DIR)Unity/src/
+PATHUFIX = $(MY_MAKEFILE_DIR)Unity/extras/fixture/src/
 #PATHS = src/
 #PATHT = test/
 PATHTRUN = $(PATHT)test_runners/
