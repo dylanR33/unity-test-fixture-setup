@@ -13,7 +13,6 @@ else
 	TARGET_EXTENSION=out
 endif
 
-.PHONY: clean
 .PHONY: test
 
 # Paths that should be defined
@@ -35,12 +34,13 @@ PATHTRUN = $(PATHT)/test_runners
 
 # User source files and corresponding object files
 USR_SRC = $(foreach dir, $(PATHS) $(PATHT) $(PATHTRUN), $(wildcard $(dir)/*.c))
-USR_OBJS = $(patsubst %.c, $(PATHO)/%.o, $(notdir $(USR_SRC)))
+USR_OBJS = $(patsubst %.c, $(PATHO)/%.o, $(USR_SRC))
 
 # Build paths
 PATHB = $(BUILD_DIR)/unity_build
 PATHD = $(PATHB)/depends
 PATHO = $(PATHB)/objs
+PATHO_MODULES = $(addprefix $(PATHO)/,$(PATHS) $(PATHT) $(PATHTRUN) unity)
 PATHR = $(PATHB)/result
 BUILD_PATHS = $(PATHB) $(PATHD) $(PATHO) $(PATHR)
 
@@ -61,8 +61,6 @@ FAIL = `grep -s FAIL $(RESULT_TXT)`
 IGNORE = `grep -s IGNORE $(RESULT_TXT)`
 SUMMARY = `grep -s -A 1 -E '\w+ Tests \w+ Failures \w+ Ignored' $(RESULT_TXT)`
 
-vpath %.c $(PATHT) $(PATHTRUN) $(PATHS) $(PATHU) $(PATHUFIX)
-
 test: $(BUILD_PATHS) $(RESULT_TXT)
 	@echo "-----------------------\nIGNORES:\n-----------------------"
 	@echo "$(IGNORE)"
@@ -76,12 +74,17 @@ test: $(BUILD_PATHS) $(RESULT_TXT)
 $(RESULT_TXT): $(RESULT_OUT)
 	-./$< -v > $@ 2>&1
 
-$(RESULT_OUT): $(USR_OBJS) $(PATHO)/unity.o $(PATHO)/unity_fixture.o #$(PATHD)/Test%.d
+$(RESULT_OUT): $(USR_OBJS) $(PATHO)/unity/unity.o $(PATHO)/unity/unity_fixture.o #$(PATHD)/Test%.d
 	$(LINK) -o $@ $^
 
 $(PATHO)/%.o: %.c
 	$(COMPILE) $(CFLAGS) $< -o $@
 
+$(PATHO)/unity/unity.o: $(PATHU)/unity.c
+	$(COMPILE) $(CFLAGS) $< -o $@
+
+$(PATHO)/unity/unity_fixture.o: $(PATHUFIX)/unity_fixture.c
+	$(COMPILE) $(CFLAGS) $< -o $@
 
 $(PATHD)/%.d: $(PATHT)/%.c
 	$(DEPEND) $@ $<
@@ -93,8 +96,7 @@ $(PATHD):
 	$(MKDIR) $(PATHD)
 
 $(PATHO):
-	$(MKDIR) $(PATHO)
+	$(MKDIR) $(PATHO) $(PATHO_MODULES)
 
 $(PATHR):
 	$(MKDIR) $(PATHR)
-
