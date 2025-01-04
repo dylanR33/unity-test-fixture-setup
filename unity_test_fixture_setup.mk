@@ -49,11 +49,10 @@ CFLAGS=-I. -I$(PATHU) -I$(PATHUFIX) $(INC_PATHS) -DUNITY_FIXTURE_NO_EXTRAS
 RESULT_TXT = $(PATHR)/AllTests.txt
 RESULT_OUT = $(patsubst $(PATHR)/%.txt, $(PATHB)/%.$(TARGET_EXTENSION), $(RESULT_TXT))
 
-PASSED = `grep -s PASS $(PATHR)/*.txt`
-FAIL = `grep -s FAIL $(PATHR)/*.txt`
-IGNORE = `grep -s IGNORE $(PATHR)/*.txt`
-
-SUMMARY = `grep -s -A 1 -E '\w+ Tests \w+ Failures \w+ Ignored' $(PATHR)/*.txt`
+PASSED = `grep -s PASS $(RESULT_TXT)`
+FAIL = `grep -s FAIL $(RESULT_TXT)`
+IGNORE = `grep -s IGNORE $(RESULT_TXT)`
+SUMMARY = `grep -s -A 1 -E '\w+ Tests \w+ Failures \w+ Ignored' $(RESULT_TXT)`
 
 vpath %.c $(PATHT) $(PATHTRUN) $(PATHS) $(PATHU) $(PATHUFIX)
 
