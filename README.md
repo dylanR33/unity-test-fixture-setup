@@ -1,17 +1,11 @@
 # unity_test_fixture_setup
 
-## File Naming Conventions
-The following are file naming conventions to ensure a proper build
+## File Placement
+The following are file placement conventions to ensure a proper build
 
 ### Test Files
-Test files should be named the same as the file being tested however prepended 
-with 'Test'
+Test files should be placed within the first layer of your test directory 
 
-For example, a file SomeFile.c should have a test file named TestSomeFile.c
-
-### Test Runner Files
-Test runner files should be named the same as the test file whos tests are being
-ran however postpended with 'Runner'
-
-For example, a test file TestSomeFile.c should have a test runner file named 
-TestSomeFileRunner.c
+### Test Runner Files and main()
+Test runner files and the file containing main() should be placed within a directory named 'test_runners' within
+your test directory.
