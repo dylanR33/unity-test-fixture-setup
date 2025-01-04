@@ -17,7 +17,7 @@ endif
 .PHONY: test
 
 # Paths that should be defined
-# MODULE_DIR : folder containing CUT
+# MODULE_DIRS : folders containing CUT's
 # TEST_DIR : test source file folder.
 # BUILD_DIR : top level build directory
 
@@ -26,25 +26,28 @@ THIS_MAKEFILE_DIR = $(dir $(abspath $(lastword $(MAKEFILE_LIST))))
 PATHU = $(THIS_MAKEFILE_DIR)Unity/src
 PATHUFIX = $(THIS_MAKEFILE_DIR)Unity/extras/fixture/src
 
-PATHTRUN = $(PATHT)/test_runners
-
-PATHS = $(MODULE_DIR)
+PATHS = $(MODULE_DIRS)
 PATHT = $(TEST_DIR)
+PATHTRUN = $(PATHT)/test_runners
 PATHB = $(BUILD_DIR)/unity_build
 PATHD = $(PATHB)/depends
 PATHO = $(PATHB)/objs
-PATHR = $(PATHB)/results
+PATHR = $(PATHB)/result
 
 BUILD_PATHS = $(PATHB) $(PATHD) $(PATHO) $(PATHR)
 
-SRCT = $(wildcard $(PATHT)/*.c)
+SRC = $(foreach dir, $(PATHS) $(PATHT) $(PATHTRUN), $(wildcard $(dir)/*.c))
+OBJS = $(patsubst %.c, $(PATHO)/%.o, $(notdir $(SRC)))
+
+INC_PATHS = $(addprefix -I, $(PATHS))
 
 COMPILE=gcc -c
 LINK=gcc
 DEPEND=gcc -MM -MG -MF
-CFLAGS=-I. -I$(PATHU) -I$(PATHUFIX) -I$(PATHS) -DUNITY_FIXTURE_NO_EXTRAS
+CFLAGS=-I. -I$(PATHU) -I$(PATHUFIX) $(INC_PATHS) -DUNITY_FIXTURE_NO_EXTRAS
 
-RESULTS = $(patsubst $(PATHT)/Test%.c,$(PATHR)/Test%.txt,$(SRCT) )
+RESULT_TXT = $(PATHR)/AllTests.txt
+RESULT_OUT = $(patsubst $(PATHR)/%.txt, $(PATHB)/%.$(TARGET_EXTENSION), $(RESULT_TXT))
 
 PASSED = `grep -s PASS $(PATHR)/*.txt`
 FAIL = `grep -s FAIL $(PATHR)/*.txt`
@@ -52,7 +55,9 @@ IGNORE = `grep -s IGNORE $(PATHR)/*.txt`
 
 SUMMARY = `grep -s -A 1 -E '\w+ Tests \w+ Failures \w+ Ignored' $(PATHR)/*.txt`
 
-test: $(BUILD_PATHS) $(RESULTS)
+vpath %.c $(PATHT) $(PATHTRUN) $(PATHS) $(PATHU) $(PATHUFIX)
+
+test: $(BUILD_PATHS) $(RESULT_TXT)
 	@echo "-----------------------\nIGNORES:\n-----------------------"
 	@echo "$(IGNORE)"
 	@echo "-----------------------\nFAILURES:\n----------------------"
@@ -62,28 +67,17 @@ test: $(BUILD_PATHS) $(RESULTS)
 	@echo "----------------------------------------------------------"
 	@echo "$(SUMMARY)"
 
-$(PATHR)/%.txt: $(PATHB)/%.$(TARGET_EXTENSION)
+$(RESULT_TXT): $(RESULT_OUT)
 	-./$< -v > $@ 2>&1
 
-$(PATHB)/Test%.$(TARGET_EXTENSION): $(PATHO)/AllTests.o $(PATHO)/Test%Runner.o $(PATHO)/Test%.o $(PATHO)/%.o $(PATHO)/unity.o $(PATHO)/unity_fixture.o #$(PATHD)/Test%.d
+$(RESULT_OUT): $(OBJS) $(PATHO)/unity.o $(PATHO)/unity_fixture.o #$(PATHD)/Test%.d
 	$(LINK) -o $@ $^
 
-$(PATHO)/%.o:: $(PATHT)/%.c
+$(PATHO)/%.o: %.c
 	$(COMPILE) $(CFLAGS) $< -o $@
 
-$(PATHO)/%.o:: $(PATHTRUN)/%.c
-	$(COMPILE) $(CFLAGS) $< -o $@
 
-$(PATHO)/%.o:: $(PATHS)/%.c
-	$(COMPILE) $(CFLAGS) $< -o $@
-
-$(PATHO)/%.o:: $(PATHU)/%.c $(PATHU)/%.h
-	$(COMPILE) $(CFLAGS) $< -o $@
-
-$(PATHO)/%.o:: $(PATHUFIX)/%.c $(PATHUFIX)/%.h
-	$(COMPILE) $(CFLAGS) $< -o $@
-
-$(PATHD)/%.d:: $(PATHT)/%.c
+$(PATHD)/%.d: $(PATHT)/%.c
 	$(DEPEND) $@ $<
 
 $(PATHB):
