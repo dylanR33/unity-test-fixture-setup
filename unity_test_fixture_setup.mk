@@ -17,38 +17,45 @@ endif
 .PHONY: test
 
 # Paths that should be defined
-# MODULE_DIRS : folders containing CUT's
-# TEST_DIR : test source file folder.
+# MODULE_DIRS : directory containing CUT's
+# TEST_DIR : test source file directory
 # BUILD_DIR : top level build directory
 
+# Directory where this makefile is located
 THIS_MAKEFILE_DIR = $(dir $(abspath $(lastword $(MAKEFILE_LIST))))
 
+# Unity paths
 PATHU = $(THIS_MAKEFILE_DIR)Unity/src
 PATHUFIX = $(THIS_MAKEFILE_DIR)Unity/extras/fixture/src
 
+# Source code paths
 PATHS = $(MODULE_DIRS)
 PATHT = $(TEST_DIR)
 PATHTRUN = $(PATHT)/test_runners
+
+# User source files and corresponding object files
+USR_SRC = $(foreach dir, $(PATHS) $(PATHT) $(PATHTRUN), $(wildcard $(dir)/*.c))
+USR_OBJS = $(patsubst %.c, $(PATHO)/%.o, $(notdir $(USR_SRC)))
+
+# Build paths
 PATHB = $(BUILD_DIR)/unity_build
 PATHD = $(PATHB)/depends
 PATHO = $(PATHB)/objs
 PATHR = $(PATHB)/result
-
 BUILD_PATHS = $(PATHB) $(PATHD) $(PATHO) $(PATHR)
 
-SRC = $(foreach dir, $(PATHS) $(PATHT) $(PATHTRUN), $(wildcard $(dir)/*.c))
-OBJS = $(patsubst %.c, $(PATHO)/%.o, $(notdir $(SRC)))
-
-INC_PATHS = $(addprefix -I, $(PATHS))
-
+# Compilation variables
 COMPILE=gcc -c
 LINK=gcc
 DEPEND=gcc -MM -MG -MF
-CFLAGS=-I. -I$(PATHU) -I$(PATHUFIX) $(INC_PATHS) -DUNITY_FIXTURE_NO_EXTRAS
+INC_PATHS = $(addprefix -I, $(PATHS))
+CFLAGS=-I$(PATHU) -I$(PATHUFIX) $(INC_PATHS) -DUNITY_FIXTURE_NO_EXTRAS
 
+# Test results
 RESULT_TXT = $(PATHR)/AllTests.txt
 RESULT_OUT = $(patsubst $(PATHR)/%.txt, $(PATHB)/%.$(TARGET_EXTENSION), $(RESULT_TXT))
 
+# Results parsing
 PASSED = `grep -s PASS $(RESULT_TXT)`
 FAIL = `grep -s FAIL $(RESULT_TXT)`
 IGNORE = `grep -s IGNORE $(RESULT_TXT)`
@@ -69,7 +76,7 @@ test: $(BUILD_PATHS) $(RESULT_TXT)
 $(RESULT_TXT): $(RESULT_OUT)
 	-./$< -v > $@ 2>&1
 
-$(RESULT_OUT): $(OBJS) $(PATHO)/unity.o $(PATHO)/unity_fixture.o #$(PATHD)/Test%.d
+$(RESULT_OUT): $(USR_OBJS) $(PATHO)/unity.o $(PATHO)/unity_fixture.o #$(PATHD)/Test%.d
 	$(LINK) -o $@ $^
 
 $(PATHO)/%.o: %.c
