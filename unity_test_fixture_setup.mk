@@ -30,7 +30,7 @@ ifndef BUILD_DIR
 endif
 
 # Directory where this makefile is located
-THIS_MAKEFILE_DIR = $(dir $(abspath $(lastword $(MAKEFILE_LIST))))
+THIS_MAKEFILE_DIR := $(dir $(abspath $(lastword $(MAKEFILE_LIST))))
 
 # Unity paths
 PATHU = $(THIS_MAKEFILE_DIR)Unity/src
@@ -41,10 +41,6 @@ PATHS = $(MODULE_DIRS)
 PATHT = $(TEST_DIR)
 PATHTRUN = $(PATHT)/test_runners
 
-# User source files and corresponding object files
-USR_SRC = $(foreach dir, $(PATHS) $(PATHT) $(PATHTRUN), $(wildcard $(dir)/*.c))
-USR_OBJS = $(patsubst %.c, $(PATHO)/%.o, $(USR_SRC))
-
 # Build paths
 PATHB = $(BUILD_DIR)/unity_build
 PATHD = $(PATHB)/depends
@@ -53,12 +49,16 @@ PATHO_MODULES = $(addprefix $(PATHO)/,$(PATHS) $(PATHT) $(PATHTRUN) unity)
 PATHR = $(PATHB)/result
 BUILD_PATHS = $(PATHB) $(PATHD) $(PATHO) $(PATHO_MODULES) $(PATHR)
 
+# User source files and corresponding object files and dependancy files
+USR_SRC = $(foreach dir, $(PATHS) $(PATHT) $(PATHTRUN), $(wildcard $(dir)/*.c))
+USR_OBJS = $(patsubst %.c, $(PATHO)/%.o, $(USR_SRC))
+USR_DEPS = $(patsubst %.c, $(PATHO)/%.d, $(USR_SRC))
+
 # Compilation variables
-COMPILE=gcc -c
-LINK=gcc
-DEPEND=gcc -MM -MG -MF
+COMPILE = gcc -c
+LINK = gcc
 INC_PATHS = $(addprefix -I, $(PATHS))
-CFLAGS=-I$(PATHU) -I$(PATHUFIX) $(INC_PATHS) -DUNITY_FIXTURE_NO_EXTRAS
+CPPFLAGS = -MMD -MP -I$(PATHU) -I$(PATHUFIX) $(INC_PATHS) -DUNITY_FIXTURE_NO_EXTRAS
 
 # Test results
 RESULT_TXT = $(PATHR)/AllTests.txt
@@ -87,19 +87,18 @@ $(RESULT_OUT): $(USR_OBJS) $(PATHO)/unity/unity.o $(PATHO)/unity/unity_fixture.o
 	$(LINK) -o $@ $^
 
 $(PATHO)/%.o: %.c
-	$(COMPILE) $(CFLAGS) $< -o $@
+	$(COMPILE) $(CPPFLAGS) $< -o $@
 
 $(PATHO)/unity/unity.o: $(PATHU)/unity.c
-	$(COMPILE) $(CFLAGS) $< -o $@
+	$(COMPILE) $(CPPFLAGS) $< -o $@
 
 $(PATHO)/unity/unity_fixture.o: $(PATHUFIX)/unity_fixture.c
-	$(COMPILE) $(CFLAGS) $< -o $@
-
-$(PATHD)/%.d: $(PATHT)/%.c
-	$(DEPEND) $@ $<
+	$(COMPILE) $(CPPFLAGS) $< -o $@
 
 $(BUILD_PATHS):
 	$(MKDIR) $@
 
+-include $(USR_DEPS)
 
 .PHONY: test
+
