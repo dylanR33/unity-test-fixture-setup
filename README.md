@@ -70,6 +70,7 @@ be found within the 'example' directory of this repository.
 
 For example:
 
+```
 test/ 
      TestSomeFile.c 
      TestOtherFile.c 
@@ -79,6 +80,7 @@ test/
                  TestOtherFileRunner.c 
                  Test...Runner.c 
                  AllTests.c 
+```
 
 
 ## Template and Example
