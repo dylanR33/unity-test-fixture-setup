@@ -13,12 +13,24 @@ else
 	TARGET_EXTENSION=out
 endif
 
-.PHONY: test
-
 # Paths that should be defined
 # MODULE_DIRS : directory containing CUT's
 # TEST_DIR : test source file directory
 # BUILD_DIR : top level build directory
+#
+# Ensure these are defined, else exit
+ifndef MODULE_DIRS
+  $(error MODULE_DIRS not defined)
+endif
+ifndef TEST_DIR
+  $(error TEST_DIR not defined)
+endif
+ifndef BUILD_DIR
+  $(error BUILD_DIR not defined)
+endif
+
+.PHONY: test
+
 
 # Directory where this makefile is located
 THIS_MAKEFILE_DIR = $(dir $(abspath $(lastword $(MAKEFILE_LIST))))
