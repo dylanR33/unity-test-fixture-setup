@@ -70,7 +70,7 @@ FAIL = `grep -s FAIL $(RESULT_TXT)`
 IGNORE = `grep -s IGNORE $(RESULT_TXT)`
 SUMMARY = `grep -s -A 1 -E '\w+ Tests \w+ Failures \w+ Ignored' $(RESULT_TXT)`
 
-test: $(BUILD_PATHS) $(RESULT_TXT)
+test: $(RESULT_TXT) | $(BUILD_PATHS) 
 	@echo "-----------------------\nIGNORES:\n-----------------------"
 	@echo "$(IGNORE)"
 	@echo "-----------------------\nFAILURES:\n----------------------"
@@ -80,19 +80,19 @@ test: $(BUILD_PATHS) $(RESULT_TXT)
 	@echo "----------------------------------------------------------"
 	@echo "$(SUMMARY)"
 
-$(RESULT_TXT): $(RESULT_OUT)
+$(RESULT_TXT): $(RESULT_OUT) | $(BUILD_PATHS)
 	-./$< -v > $@ 2>&1
 
-$(RESULT_OUT): $(USR_OBJS) $(PATHO)/unity/unity.o $(PATHO)/unity/unity_fixture.o #$(PATHD)/Test%.d
+$(RESULT_OUT): $(USR_OBJS) $(PATHO)/unity/unity.o $(PATHO)/unity/unity_fixture.o | $(BUILD_PATHS)
 	$(LINK) -o $@ $^
 
-$(PATHO)/%.o: %.c
+$(PATHO)/%.o: %.c | $(BUILD_PATHS)
 	$(COMPILE) $(CPPFLAGS) $< -o $@
 
-$(PATHO)/unity/unity.o: $(PATHU)/unity.c
+$(PATHO)/unity/unity.o: $(PATHU)/unity.c | $(BUILD_PATHS)
 	$(COMPILE) $(CPPFLAGS) $< -o $@
 
-$(PATHO)/unity/unity_fixture.o: $(PATHUFIX)/unity_fixture.c
+$(PATHO)/unity/unity_fixture.o: $(PATHUFIX)/unity_fixture.c | $(BUILD_PATHS)
 	$(COMPILE) $(CPPFLAGS) $< -o $@
 
 $(BUILD_PATHS):
