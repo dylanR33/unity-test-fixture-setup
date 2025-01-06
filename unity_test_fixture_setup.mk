@@ -1,103 +1,103 @@
 ifeq ($(OS),Windows_NT)
   ifeq ($(shell uname -s),) # not in a bash-like shell
-	CLEANUP = del /F /Q
-	MKDIR = mkdir
+	UTFS_CLEANUP = del /F /Q
+	UTFS_MKDIR = mkdir
   else # in a bash-like shell, like msys
-	CLEANUP = rm -f
-	MKDIR = mkdir -p
+	UTFS_CLEANUP = rm -f
+	UTFS_MKDIR = mkdir -p
   endif
-	TARGET_EXTENSION=exe
+	UTFS_TARGET_EXTENSION=exe
 else
-	CLEANUP = rm -f
-	MKDIR = mkdir -p
-	TARGET_EXTENSION=out
+	UTFS_CLEANUP = rm -f
+	UTFS_MKDIR = mkdir -p
+	UTFS_TARGET_EXTENSION=out
 endif
 
 # Paths that should be defined
-# MODULE_DIRS : directory containing CUT's
-# TEST_DIR : test source file directory
-# BUILD_DIR : top level build directory
+# UTFS_MODULE_DIRS : directory containing CUT's
+# UTFS_TEST_DIR : test source file directory
+# UTFS_BUILD_DIR : top level build directory
 #
 # Ensure these are defined, else exit
-ifndef MODULE_DIRS
-  $(error MODULE_DIRS not defined)
+ifndef UTFS_MODULE_DIRS
+  $(error UTFS_MODULE_DIRS not defined)
 endif
-ifndef TEST_DIR
-  $(error TEST_DIR not defined)
+ifndef UTFS_TEST_DIR
+  $(error UTFS_TEST_DIR not defined)
 endif
-ifndef BUILD_DIR
-  $(error BUILD_DIR not defined)
+ifndef UTFS_BUILD_DIR
+  $(error UTFS_BUILD_DIR not defined)
 endif
 
 # Directory where this makefile is located
-THIS_MAKEFILE_DIR := $(dir $(abspath $(lastword $(MAKEFILE_LIST))))
+UTFS_THIS_MAKEFILE_DIR := $(dir $(abspath $(lastword $(MAKEFILE_LIST))))
 
 # Unity paths
-PATHU = $(THIS_MAKEFILE_DIR)Unity/src
-PATHUFIX = $(THIS_MAKEFILE_DIR)Unity/extras/fixture/src
+UTFS_PATHU = $(UTFS_THIS_MAKEFILE_DIR)Unity/src
+UTFS_PATHUFIX = $(UTFS_THIS_MAKEFILE_DIR)Unity/extras/fixture/src
 
 # Source code paths
-PATHS = $(MODULE_DIRS)
-PATHT = $(TEST_DIR)
-PATHTRUN = $(PATHT)/test_runners
+UTFS_PATHS = $(UTFS_MODULE_DIRS)
+UTFS_PATHT = $(UTFS_TEST_DIR)
+UTFS_PATHTRUN = $(UTFS_PATHT)/test_runners
 
 # Build paths
-PATHB = $(BUILD_DIR)/unity_build
-PATHO = $(PATHB)/objs
-PATHO_MODULES = $(addprefix $(PATHO)/,$(PATHS) $(PATHT) $(PATHTRUN) unity)
-PATHR = $(PATHB)/result
-BUILD_PATHS = $(PATHB) $(PATHO) $(PATHO_MODULES) $(PATHR)
+UTFS_PATHB = $(UTFS_BUILD_DIR)/unity_build
+UTFS_PATHO = $(UTFS_PATHB)/objs
+UTFS_PATHO_MODULES = $(addprefix $(UTFS_PATHO)/,$(UTFS_PATHS) $(UTFS_PATHT) $(UTFS_PATHTRUN) unity)
+UTFS_PATHR = $(UTFS_PATHB)/result
+UTFS_BUILD_PATHS = $(UTFS_PATHB) $(UTFS_PATHO) $(UTFS_PATHO_MODULES) $(UTFS_PATHR)
 
 # User source files and corresponding object files and dependancy files
-USR_SRC = $(foreach dir, $(PATHS) $(PATHT) $(PATHTRUN), $(wildcard $(dir)/*.c))
-USR_OBJS = $(patsubst %.c, $(PATHO)/%.o, $(USR_SRC))
-USR_DEPS = $(patsubst %.c, $(PATHO)/%.d, $(USR_SRC))
+UTFS_USR_SRC = $(foreach utfs_dir, $(UTFS_PATHS) $(UTFS_PATHT) $(UTFS_PATHTRUN), $(wildcard $(utfs_dir)/*.c))
+UTFS_USR_OBJS = $(patsubst %.c, $(UTFS_PATHO)/%.o, $(UTFS_USR_SRC))
+UTFS_USR_DEPS = $(patsubst %.c, $(UTFS_PATHO)/%.d, $(UTFS_USR_SRC))
 
 # Compilation variables
-COMPILE = gcc -c
-LINK = gcc
-INC_PATHS = $(addprefix -I, $(PATHS))
-CPPFLAGS = -MMD -MP -I$(PATHU) -I$(PATHUFIX) $(INC_PATHS) -DUNITY_FIXTURE_NO_EXTRAS
+UTFS_COMPILE = gcc -c
+UTFS_LINK = gcc
+UTFS_INC_PATHS = $(addprefix -I, $(UTFS_PATHS))
+UTFS_CPPFLAGS = -MMD -MP -I$(UTFS_PATHU) -I$(UTFS_PATHUFIX) $(UTFS_INC_PATHS) -DUNITY_FIXTURE_NO_EXTRAS
 
 # Test results
-RESULT_TXT = $(PATHR)/AllTests.txt
-RESULT_OUT = $(patsubst $(PATHR)/%.txt, $(PATHB)/%.$(TARGET_EXTENSION), $(RESULT_TXT))
+UTFS_RESULT_TXT = $(UTFS_PATHR)/AllTests.txt
+UTFS_RESULT_OUT = $(patsubst $(UTFS_PATHR)/%.txt, $(UTFS_PATHB)/%.$(UTFS_TARGET_EXTENSION), $(UTFS_RESULT_TXT))
 
 # Results parsing
-PASSED = `grep -s PASS $(RESULT_TXT)`
-FAIL = `grep -s FAIL $(RESULT_TXT)`
-IGNORE = `grep -s IGNORE $(RESULT_TXT)`
-SUMMARY = `grep -s -A 1 -E '\w+ Tests \w+ Failures \w+ Ignored' $(RESULT_TXT)`
+UTFS_PASSED = `grep -s PASS $(UTFS_RESULT_TXT)`
+UTFS_FAIL = `grep -s FAIL $(UTFS_RESULT_TXT)`
+UTFS_IGNORE = `grep -s IGNORE $(UTFS_RESULT_TXT)`
+UTFS_SUMMARY = `grep -s -A 1 -E '\w+ Tests \w+ Failures \w+ Ignored' $(UTFS_RESULT_TXT)`
 
-test: $(RESULT_TXT) | $(BUILD_PATHS) 
-	@echo "-----------------------\nIGNORES:\n-----------------------"
-	@echo "$(IGNORE)"
-	@echo "-----------------------\nFAILURES:\n----------------------"
-	@echo "$(FAIL)"
-	@echo "-----------------------\nPASSED:\n------------------------"
-	@echo "$(PASSED)"
-	@echo "----------------------------------------------------------"
-	@echo "$(SUMMARY)"
+test: $(UTFS_RESULT_TXT) | $(UTFS_BUILD_PATHS) 
+	@echo "-----------------------IGNORES-----------------------"
+	@echo "$(UTFS_IGNORE)"
+	@echo "-----------------------FAILURES----------------------"
+	@echo "$(UTFS_FAIL)"
+	@echo "-----------------------PASSED------------------------"
+	@echo "$(UTFS_PASSED)"
+	@echo "-----------------------------------------------------"
+	@echo "$(UTFS_SUMMARY)"
 
-$(RESULT_TXT): $(RESULT_OUT) | $(BUILD_PATHS)
+$(UTFS_RESULT_TXT): $(UTFS_RESULT_OUT) | $(UTFS_BUILD_PATHS)
 	-./$< -v > $@ 2>&1
 
-$(RESULT_OUT): $(USR_OBJS) $(PATHO)/unity/unity.o $(PATHO)/unity/unity_fixture.o | $(BUILD_PATHS)
-	$(LINK) -o $@ $^
+$(UTFS_RESULT_OUT): $(UTFS_USR_OBJS) $(UTFS_PATHO)/unity/unity.o $(UTFS_PATHO)/unity/unity_fixture.o | $(UTFS_BUILD_PATHS)
+	$(UTFS_LINK) -o $@ $^
 
-$(PATHO)/%.o: %.c | $(BUILD_PATHS)
-	$(COMPILE) $(CPPFLAGS) $< -o $@
+$(UTFS_PATHO)/%.o: %.c | $(UTFS_BUILD_PATHS)
+	$(UTFS_COMPILE) $(UTFS_CPPFLAGS) $< -o $@
 
-$(PATHO)/unity/unity.o: $(PATHU)/unity.c | $(BUILD_PATHS)
-	$(COMPILE) $(CPPFLAGS) $< -o $@
+$(UTFS_PATHO)/unity/unity.o: $(UTFS_PATHU)/unity.c | $(UTFS_BUILD_PATHS)
+	$(UTFS_COMPILE) $(UTFS_CPPFLAGS) $< -o $@
 
-$(PATHO)/unity/unity_fixture.o: $(PATHUFIX)/unity_fixture.c | $(BUILD_PATHS)
-	$(COMPILE) $(CPPFLAGS) $< -o $@
+$(UTFS_PATHO)/unity/unity_fixture.o: $(UTFS_PATHUFIX)/unity_fixture.c | $(UTFS_BUILD_PATHS)
+	$(UTFS_COMPILE) $(UTFS_CPPFLAGS) $< -o $@
 
-$(BUILD_PATHS):
-	$(MKDIR) $@
+$(UTFS_BUILD_PATHS):
+	$(UTFS_MKDIR) $@
 
--include $(USR_DEPS)
+-include $(UTFS_USR_DEPS)
 
 .PHONY: test
 

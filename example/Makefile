@@ -1,6 +1,6 @@
-MODULE_DIRS = src/SomeFile src/OtherFile
-TEST_DIR = test
-BUILD_DIR = build
+UTFS_MODULE_DIRS = src/SomeFile src/OtherFile
+UTFS_TEST_DIR = test
+UTFS_BUILD_DIR = build
 
 include ../unity_test_fixture_setup.mk
 

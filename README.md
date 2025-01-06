@@ -1,11 +1,69 @@
 # unity_test_fixture_setup
 
-## File Placement
-The following are file placement conventions to ensure a proper build
+## Intended Usage and Incorperation Into Project
+This repository serves as a drop in setup into a C project for the use of Unity's 
+test fixture features. The idea here is to add this repository as a submodule into
+your project. This repository is selfcontaining in that it contains Unity as a 
+submodule itself so no other repositories need to be cloned externally.
 
-### Test Files
-Test files should be placed within the first layer of your test directory 
 
-### Test Runner Files and main()
-Test runner files and the file containing main() should be placed within a directory named 'test_runners' within
-your test directory.
+Use the following command to clone this repository into your project:
+`
+git clone --recurse-submodules https://github.com/dylanR33/unity_test_fixture_setup.git
+`
+
+Use the following command to add this repository as a git submodule of your project:
+`
+git submodule add https://github.com/dylanR33/unity_test_fixture_setup.git
+`
+
+## Necessary Variable Definitions
+The following paths should be defined for the makefile to work correctly:
+
+UTFS_MODULE_DIRS: directories containing the source code modules to be tested
+
+UTFS_TEST_DIR: directory containing test code and the test_runner directory
+
+UTFS_BUILD_DIR: the project build directory
+
+
+## Expected Test Directory Structure
+The test directory defined by the variable UTFS_TEST_DIR should have the following
+structure.
+
+Within the first layer of the directory should be the individual test files defining 
+each test group and its corresponding tests. Also within this first layer should be a 
+directory called 'test_runner'. Within test_runner should be each TEST_GROUP_RUNNER 
+definition for each of the respective test groups defined previously as well as a file 
+containing the main() function which calls UnityMain(). An example of this setup can 
+be found within the 'example' directory of this repository.
+
+For example:
+
+test/
+     TestSomeFile.c
+     TestOtherFile.c
+     Test....c
+     test_runner/
+                 TestSomeFileRunner.c
+                 TestOtherFileRunner.c
+                 Test...Runner.c
+                 AllTests.c
+
+## Template and Example
+The directory 'test_template' contains a basic structure of a test directory. Feel 
+free to copy this folder to your project and rename it and its files as you find 
+necessary, however DO NOT rename the test_runners directory (however the files within 
+it can be renamed).
+
+## Suggested Test File Naming Convention
+A convenient and easy to manage convention to name the files within your test directory
+is the following:
+
+Test Files: use the same name as the corresponding source file prefixed with 'Test'
+
+Test Runner Files: use the same name as the corresponding test file postfixed with 'Runner'
+
+
+
+
