@@ -43,11 +43,10 @@ PATHTRUN = $(PATHT)/test_runners
 
 # Build paths
 PATHB = $(BUILD_DIR)/unity_build
-PATHD = $(PATHB)/depends
 PATHO = $(PATHB)/objs
 PATHO_MODULES = $(addprefix $(PATHO)/,$(PATHS) $(PATHT) $(PATHTRUN) unity)
 PATHR = $(PATHB)/result
-BUILD_PATHS = $(PATHB) $(PATHD) $(PATHO) $(PATHO_MODULES) $(PATHR)
+BUILD_PATHS = $(PATHB) $(PATHO) $(PATHO_MODULES) $(PATHR)
 
 # User source files and corresponding object files and dependancy files
 USR_SRC = $(foreach dir, $(PATHS) $(PATHT) $(PATHTRUN), $(wildcard $(dir)/*.c))
