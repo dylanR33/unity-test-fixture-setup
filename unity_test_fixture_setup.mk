@@ -29,9 +29,6 @@ ifndef BUILD_DIR
   $(error BUILD_DIR not defined)
 endif
 
-.PHONY: test
-
-
 # Directory where this makefile is located
 THIS_MAKEFILE_DIR = $(dir $(abspath $(lastword $(MAKEFILE_LIST))))
 
@@ -54,7 +51,7 @@ PATHD = $(PATHB)/depends
 PATHO = $(PATHB)/objs
 PATHO_MODULES = $(addprefix $(PATHO)/,$(PATHS) $(PATHT) $(PATHTRUN) unity)
 PATHR = $(PATHB)/result
-BUILD_PATHS = $(PATHB) $(PATHD) $(PATHO) $(PATHR)
+BUILD_PATHS = $(PATHB) $(PATHD) $(PATHO) $(PATHO_MODULES) $(PATHR)
 
 # Compilation variables
 COMPILE=gcc -c
@@ -101,14 +98,8 @@ $(PATHO)/unity/unity_fixture.o: $(PATHUFIX)/unity_fixture.c
 $(PATHD)/%.d: $(PATHT)/%.c
 	$(DEPEND) $@ $<
 
-$(PATHB):
-	$(MKDIR) $(PATHB)
+$(BUILD_PATHS):
+	$(MKDIR) $@
 
-$(PATHD):
-	$(MKDIR) $(PATHD)
 
-$(PATHO):
-	$(MKDIR) $(PATHO) $(PATHO_MODULES)
-
-$(PATHR):
-	$(MKDIR) $(PATHR)
+.PHONY: test
