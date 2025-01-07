@@ -3,18 +3,17 @@
 ## Incorperation Into Project
 This repository serves as a drop in setup into a C project for the use of Unity's 
 test fixture features. The idea here is to add this repository as a submodule into
-your project. This repository is selfcontaining in that it contains Unity as a 
+your project. This repository is self-contained in that it contains Unity as a 
 submodule itself so no other repositories need to be cloned externally.
-
-
-Use the following command to clone this repository into your project:
-```
-git clone --recurse-submodules https://github.com/dylanR33/unity_test_fixture_setup.git
-```
 
 Use the following command to add this repository as a git submodule of your project:
 ```
 git submodule add https://github.com/dylanR33/unity_test_fixture_setup.git
+```
+
+Use the following command to clone this repository into your project:
+```
+git clone --recurse-submodules https://github.com/dylanR33/unity_test_fixture_setup.git
 ```
 
 
@@ -88,6 +87,9 @@ The directory 'test_template' contains a basic structure of a test directory. Fe
 free to copy this folder to your project and rename it and its files as you find 
 necessary, however DO NOT rename the test_runners directory (however the files within 
 it can be renamed).
+
+The directory 'example' contains a minimal example of how to incorperate this repository 
+into a project. From within this directory simply run `make test` and observe the output.
 
 
 ## Suggested Test File Naming Convention
