@@ -49,15 +49,14 @@ UTFS_PATHR = $(UTFS_PATHB)/result
 UTFS_BUILD_PATHS = $(UTFS_PATHB) $(UTFS_PATHO) $(UTFS_PATHO_MODULES) $(UTFS_PATHR)
 
 # User source files and corresponding object files and dependancy files
-UTFS_USR_SRC = $(foreach utfs_dir, $(UTFS_PATHS) $(UTFS_PATHT) $(UTFS_PATHTRUN), $(wildcard $(utfs_dir)/*.c))
-UTFS_USR_OBJS = $(patsubst %.c, $(UTFS_PATHO)/%.o, $(UTFS_USR_SRC))
-UTFS_USR_DEPS = $(patsubst %.c, $(UTFS_PATHO)/%.d, $(UTFS_USR_SRC))
+UTFS_USR_SRCS = $(foreach utfs_dir, $(UTFS_PATHS) $(UTFS_PATHT) $(UTFS_PATHTRUN), $(wildcard $(utfs_dir)/*.c))
+UTFS_USR_OBJS = $(patsubst %.c, $(UTFS_PATHO)/%.o, $(UTFS_USR_SRCS))
+UTFS_USR_DEPS = $(patsubst %.c, $(UTFS_PATHO)/%.d, $(UTFS_USR_SRCS))
 
 # Compilation variables
-UTFS_COMPILE = gcc -c
-UTFS_LINK = gcc
-UTFS_INC_PATHS = $(addprefix -I, $(UTFS_PATHS))
-UTFS_CPPFLAGS = -MMD -MP -I$(UTFS_PATHU) -I$(UTFS_PATHUFIX) $(UTFS_INC_PATHS) -DUNITY_FIXTURE_NO_EXTRAS
+UTFS_CC = gcc
+UTFS_USR_INC_PATHS = $(addprefix -I, $(UTFS_PATHS))
+UTFS_CPPFLAGS = -MMD -MP -I$(UTFS_PATHU) -I$(UTFS_PATHUFIX) $(UTFS_USR_INC_PATHS) -DUNITY_FIXTURE_NO_EXTRAS
 
 # Test results
 UTFS_RESULT_TXT = $(UTFS_PATHR)/AllTests.txt
@@ -83,16 +82,16 @@ $(UTFS_RESULT_TXT): $(UTFS_RESULT_OUT) | $(UTFS_BUILD_PATHS)
 	-./$< -v > $@ 2>&1
 
 $(UTFS_RESULT_OUT): $(UTFS_USR_OBJS) $(UTFS_PATHO)/unity/unity.o $(UTFS_PATHO)/unity/unity_fixture.o | $(UTFS_BUILD_PATHS)
-	$(UTFS_LINK) -o $@ $^
+	$(UTFS_CC) -o $@ $^
 
 $(UTFS_PATHO)/%.o: %.c | $(UTFS_BUILD_PATHS)
-	$(UTFS_COMPILE) $(UTFS_CPPFLAGS) $< -o $@
+	$(UTFS_CC) $(UTFS_CPPFLAGS) -c $< -o $@
 
 $(UTFS_PATHO)/unity/unity.o: $(UTFS_PATHU)/unity.c | $(UTFS_BUILD_PATHS)
-	$(UTFS_COMPILE) $(UTFS_CPPFLAGS) $< -o $@
+	$(UTFS_CC) $(UTFS_CPPFLAGS) -c $< -o $@
 
 $(UTFS_PATHO)/unity/unity_fixture.o: $(UTFS_PATHUFIX)/unity_fixture.c | $(UTFS_BUILD_PATHS)
-	$(UTFS_COMPILE) $(UTFS_CPPFLAGS) $< -o $@
+	$(UTFS_CC) $(UTFS_CPPFLAGS) -c $< -o $@
 
 $(UTFS_BUILD_PATHS):
 	$(UTFS_MKDIR) $@
