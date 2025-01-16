@@ -1,4 +1,4 @@
-# unity_test_fixture_setup
+# unity-test-fixture-setup
 
 ## Incorperation Into Project
 This repository serves as a drop in setup into a C project for the use of Unity's 
@@ -8,12 +8,12 @@ submodule itself so no other repositories need to be cloned externally.
 
 Use the following command to add this repository as a git submodule of your project:
 ```
-git submodule add https://github.com/dylanR33/unity_test_fixture_setup.git
+git submodule add https://github.com/dylanR33/unity-test-fixture-setup.git
 ```
 
 Use the following command to clone this repository into your project:
 ```
-git clone --recurse-submodules https://github.com/dylanR33/unity_test_fixture_setup.git
+git clone --recurse-submodules https://github.com/dylanR33/unity-test-fixture-setup.git
 ```
 
 
@@ -34,7 +34,7 @@ UTFS_MODULE_DIRS = path_to/module1 path_to/module2
 UTFS_TEST_DIR = path_to/test_dir
 UTFS_BUILD_DIR = path_to/build_dir
 
-include path_to/unity_test_fixture_setup/unity_test_fixture_setup.mk
+include path_to/unity-test-fixture-setup/unity_test_fixture_setup.mk
 ```
 
 The makefile 'unity_test_fixture_setup.mk' contains the necessary rules to build your
