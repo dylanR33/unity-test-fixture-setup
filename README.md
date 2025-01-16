@@ -71,13 +71,13 @@ For example:
 
 ```
 test/ 
-     TestSomeFile.c 
-     TestOtherFile.c 
-     Test....c 
+     SomeFileTest.c 
+     OtherFileTest.c 
+     ...Test.c 
      test_runner/ 
-                 TestSomeFileRunner.c 
-                 TestOtherFileRunner.c 
-                 Test...Runner.c 
+                 SomeFileTestRunner.c 
+                 OtherFileTestRunner.c 
+                 ...TestRunner.c 
                  AllTests.c 
 ```
 
@@ -96,7 +96,7 @@ into a project. From within this directory simply run `make test` and observe th
 A convenient and easy to manage convention to name the files within your test directory
 is the following.
 
-Test Files: use the same name as the corresponding source file prefixed with 'Test'
+Test Files: use the same name as the corresponding source file postfixed with 'Test'
 
-Test Runner Files: use the same name as the corresponding test file postfixed with 'Runner'
+Test Runner Files: use the same name as the corresponding source file postfixed with 'TestRunner'
 
