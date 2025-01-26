@@ -56,6 +56,10 @@ UTFS_TEST_DIR: directory containing test code and the test_runner directory
 UTFS_BUILD_DIR: your projects build directory
 
 
+## Optional Variable Definitions
+UTFS_DEFINES: defines to pass to compiler (do not prefix with -D)
+
+
 ## Expected Test Directory Structure
 The test directory defined by the variable UTFS_TEST_DIR should have the following
 structure.
