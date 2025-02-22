@@ -74,10 +74,10 @@ UTFS_SUMMARY = `grep -s -A 1 -E '\w+ Tests \w+ Failures \w+ Ignored' $(UTFS_RESU
 test: $(UTFS_RESULT_TXT) | $(UTFS_BUILD_PATHS) 
 	@echo "-----------------------IGNORES-----------------------"
 	@echo "$(UTFS_IGNORE)"
-	@echo "-----------------------FAILURES----------------------"
-	@echo "$(UTFS_FAIL)"
 	@echo "-----------------------PASSED------------------------"
 	@echo "$(UTFS_PASSED)"
+	@echo "-----------------------FAILURES----------------------"
+	@echo "$(UTFS_FAIL)"
 	@echo "-----------------------------------------------------"
 	@echo "$(UTFS_SUMMARY)"
 
