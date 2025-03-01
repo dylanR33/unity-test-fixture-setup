@@ -55,6 +55,7 @@ UTFS_USR_DEPS = $(patsubst %.c, $(UTFS_PATHO)/%.d, $(UTFS_USR_SRCS))
 
 # Compilation variables
 UTFS_CC = gcc
+UTFS_CFLAGS += $(UTFS_WFLAGS)
 UTFS_USR_INC_PATHS = $(addprefix -I, $(UTFS_PATHS))
 ifdef UTFS_DEFINES
 UTFS_DEFINE_LIST = $(addprefix -D, $(UTFS_DEFINES))
@@ -85,16 +86,16 @@ $(UTFS_RESULT_TXT): $(UTFS_RESULT_OUT) | $(UTFS_BUILD_PATHS)
 	-./$< -v > $@ 2>&1
 
 $(UTFS_RESULT_OUT): $(UTFS_USR_OBJS) $(UTFS_PATHO)/unity/unity.o $(UTFS_PATHO)/unity/unity_fixture.o | $(UTFS_BUILD_PATHS)
-	$(UTFS_CC) -o $@ $^
+	$(UTFS_CC) $(UTFS_CFLAGS) -o $@ $^
 
 $(UTFS_PATHO)/%.o: %.c | $(UTFS_BUILD_PATHS)
-	$(UTFS_CC) $(UTFS_CPPFLAGS) -c $< -o $@
+	$(UTFS_CC) $(UTFS_CFLAGS) $(UTFS_CPPFLAGS) -c $< -o $@
 
 $(UTFS_PATHO)/unity/unity.o: $(UTFS_PATHU)/unity.c | $(UTFS_BUILD_PATHS)
-	$(UTFS_CC) $(UTFS_CPPFLAGS) -c $< -o $@
+	$(UTFS_CC) $(UTFS_CFLAGS) $(UTFS_CPPFLAGS) -c $< -o $@
 
 $(UTFS_PATHO)/unity/unity_fixture.o: $(UTFS_PATHUFIX)/unity_fixture.c | $(UTFS_BUILD_PATHS)
-	$(UTFS_CC) $(UTFS_CPPFLAGS) -c $< -o $@
+	$(UTFS_CC) $(UTFS_CFLAGS) $(UTFS_CPPFLAGS) -c $< -o $@
 
 $(UTFS_BUILD_PATHS):
 	$(UTFS_MKDIR) $@
